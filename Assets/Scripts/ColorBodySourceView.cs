@@ -3,14 +3,21 @@ using System.Collections;
 using System.Collections.Generic;
 using Kinect = Windows.Kinect;
 
-public class BodySourceView : MonoBehaviour 
+public class ColorBodySourceView : MonoBehaviour 
 {
     public Material BoneMaterial;
     public GameObject BodySourceManager;
     
     private Dictionary<ulong, GameObject> _Bodies = new Dictionary<ulong, GameObject>();
     private BodySourceManager _BodyManager;
-    
+
+	public Camera ConvertCamera;
+
+	private Kinect.CoordinateMapper _CoordinateMapper;
+
+	private int _KinectWidth = 1920;
+	private int _KinectHeight = 1080;
+
     private Dictionary<Kinect.JointType, Kinect.JointType> _BoneMap = new Dictionary<Kinect.JointType, Kinect.JointType>()
     {
         { Kinect.JointType.FootLeft, Kinect.JointType.AnkleLeft },
@@ -105,6 +112,10 @@ public class BodySourceView : MonoBehaviour
                 RefreshBodyObject(body, _Bodies[body.TrackingId]);
             }
         }
+
+		if ( _CoordinateMapper ==null ) {
+			_CoordinateMapper = _BodyManager.Sensor.CoordinateMapper;
+		}
     }
     
     private GameObject CreateBodyObject(ulong id)
@@ -176,8 +187,34 @@ public class BodySourceView : MonoBehaviour
         }
     }
     
-    private static Vector3 GetVector3FromJoint(Kinect.Joint joint)
+    private Vector3 GetVector3FromJoint(Kinect.Joint joint)
     {
-        return new Vector3(joint.Position.X * 10, joint.Position.Y * 10, joint.Position.Z * 10);
+		var valid = joint.TrackingState != Kinect.TrackingState.NotTracked;
+		if ( ConvertCamera != null || valid ) {
+			// KinectのCamera座標系(3次元)をColor座標系(2次元)に変換する
+			var point =_CoordinateMapper.MapCameraPointToColorSpace( joint.Position );
+			var point2 = new Vector3( point.X, point.Y, 0 );
+			if ( (0 <= point2.x) && (point2.x < _KinectWidth) && 
+				(0 <= point2.y) && (point2.y < _KinectHeight) ) {
+
+				// スクリーンサイズで調整(Kinect->Unity)
+				point2.x = point2.x * Screen.width / _KinectWidth;
+				point2.y = point2.y * Screen.height / _KinectHeight;
+
+				// Unityのワールド座標系(3次元)に変換
+				var colorPoint3 = ConvertCamera.ScreenToWorldPoint( point2 );
+
+				// 座標の調整
+				// Y座標は逆、Z座標は-1にする(Xもミラー状態によって逆にする必要あり)
+				colorPoint3.y *= -1;
+				colorPoint3.z = -1;
+
+				return colorPoint3;
+			}
+		}
+
+		return new Vector3( joint.Position.X * 10, 
+			joint.Position.Y * 10, 
+			-1 );
     }
 }
