@@ -7,6 +7,7 @@ public class ColorBodySourceView : MonoBehaviour
 {
     public Material BoneMaterial;
     public GameObject BodySourceManager;
+	public float scale = 0.5f;
     
     private Dictionary<ulong, GameObject> _Bodies = new Dictionary<ulong, GameObject>();
     private BodySourceManager _BodyManager;
@@ -199,8 +200,8 @@ public class ColorBodySourceView : MonoBehaviour
 				(0 <= point2.y) && (point2.y < _KinectHeight) ) {
 
 				// スクリーンサイズで調整(Kinect->Unity)
-				point2.x = 0.5f * point2.x * Screen.width / _KinectWidth;
-				point2.y = 0.5f * point2.y * Screen.height / _KinectHeight;
+				point2.x = scale * point2.x * Screen.width / _KinectWidth + Screen.width/4;
+				point2.y = scale * point2.y * Screen.height / _KinectHeight + Screen.height /4;
 
 				// Unityのワールド座標系(3次元)に変換
 				var colorPoint3 = ConvertCamera.ScreenToWorldPoint( point2 );
