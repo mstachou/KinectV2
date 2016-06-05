@@ -115,16 +115,19 @@ public class BodySourceView : MonoBehaviour
         {
 			// 関節のCubeを生成する
             GameObject jointObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			jointObj.transform.tag = "Body";
 			jointObj.AddComponent<bodyScript> ();
+			jointObj.GetComponent<Renderer> ().enabled = false;
 			Vector3 v = jointObj.transform.position;
 			jointObj.transform.position = new Vector3 (v.x,v.y,0);
             
             LineRenderer lr = jointObj.AddComponent<LineRenderer>();
             lr.SetVertexCount(2);
             lr.material = BoneMaterial;
-            lr.SetWidth(0.05f, 0.05f);
+            lr.SetWidth(1f, 1f);
             
-            jointObj.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            jointObj.transform.localScale = new Vector3(1, 1, 1);
+			//jointObj.transform.localScale = new Vector3(0.5f, 0.5f, 0.5f);
             jointObj.name = jt.ToString();
             jointObj.transform.parent = body.transform;
         }

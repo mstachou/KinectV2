@@ -136,6 +136,7 @@ public class ColorBodySourceView : MonoBehaviour
             lr.SetWidth(0.05f, 0.05f);
             
             jointObj.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+			//jointObj.transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
             jointObj.name = jt.ToString();
             jointObj.transform.parent = body.transform;
         }
@@ -198,8 +199,8 @@ public class ColorBodySourceView : MonoBehaviour
 				(0 <= point2.y) && (point2.y < _KinectHeight) ) {
 
 				// スクリーンサイズで調整(Kinect->Unity)
-				point2.x = point2.x * Screen.width / _KinectWidth;
-				point2.y = point2.y * Screen.height / _KinectHeight;
+				point2.x = 0.5f * point2.x * Screen.width / _KinectWidth;
+				point2.y = 0.5f * point2.y * Screen.height / _KinectHeight;
 
 				// Unityのワールド座標系(3次元)に変換
 				var colorPoint3 = ConvertCamera.ScreenToWorldPoint( point2 );
