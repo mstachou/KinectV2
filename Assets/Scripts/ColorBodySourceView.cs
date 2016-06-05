@@ -126,17 +126,19 @@ public class ColorBodySourceView : MonoBehaviour
         for (Kinect.JointType jt = Kinect.JointType.SpineBase; jt <= Kinect.JointType.ThumbRight; jt++)
         {
 			// 関節のCubeを生成する
-            GameObject jointObj = GameObject.CreatePrimitive(PrimitiveType.Cube);
+			GameObject jointObj = GameObject.CreatePrimitive(PrimitiveType.Sphere);
 			jointObj.AddComponent<bodyScript> ();
 			Vector3 v = jointObj.transform.position;
 			jointObj.transform.position = new Vector3 (v.x,v.y,0);
+			//jointObj.GetComponent<Renderer> ().enabled = false;
             
             LineRenderer lr = jointObj.AddComponent<LineRenderer>();
+			lr.SetColors (Color.red,Color.red);
             lr.SetVertexCount(2);
             lr.material = BoneMaterial;
-            lr.SetWidth(0.05f, 0.05f);
+            lr.SetWidth(0.75f, 0.75f);
             
-            jointObj.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            jointObj.transform.localScale = new Vector3(1, 1, 1);
 			//jointObj.transform.localScale = new Vector3(1.3f, 1.3f, 1.3f);
             jointObj.name = jt.ToString();
             jointObj.transform.parent = body.transform;
@@ -201,7 +203,7 @@ public class ColorBodySourceView : MonoBehaviour
 
 				// スクリーンサイズで調整(Kinect->Unity)
 				point2.x = scale * point2.x * Screen.width / _KinectWidth + Screen.width/4;
-				point2.y = scale * point2.y * Screen.height / _KinectHeight + Screen.height /4;
+				point2.y = scale * point2.y * Screen.height / _KinectHeight + Screen.height /3 ;
 
 				// Unityのワールド座標系(3次元)に変換
 				var colorPoint3 = ConvertCamera.ScreenToWorldPoint( point2 );
