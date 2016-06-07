@@ -15,8 +15,10 @@ public class CoinScript : MonoBehaviour {
 
 	void OnTriggerEnter(Collider col){
 		if (col.tag == "Goal") {
-			KoroKoroManager.instance.SetState (2);
-			GetComponent<Rigidbody> ().velocity = Vector3.zero;
+			if (KoroKoroManager.instance.GetState () != 3) {
+				KoroKoroManager.instance.SetState (2);
+				GetComponent<Rigidbody> ().velocity = Vector3.zero;
+			}
 		}
 		if (col.tag == "GameOver") {
 			KoroKoroManager.instance.SetState (3);

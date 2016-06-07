@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.UI;
 
 public class KoroKoroManager : MonoBehaviour {
 
@@ -12,6 +13,11 @@ public class KoroKoroManager : MonoBehaviour {
 	public GameObject faultObject;
 
 	public GameObject[] stages;
+
+	float timer = 60.0f;
+	public Text timerLabel;
+
+	public float initTime = 40;
 
 
 	Vector3 startpos;
@@ -43,6 +49,7 @@ public class KoroKoroManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		timerLabel.text = timer.ToString ("f1");
 		switch (state) {
 		case State.PreGame:
 			coin.GetComponent<Rigidbody> ().useGravity = false;
@@ -53,6 +60,7 @@ public class KoroKoroManager : MonoBehaviour {
 			if (Input.GetKeyDown ("n")) {
 				SetState (1);
 			}
+			timer = initTime;
 			clearObject.SetActive (false);
 			faultObject.SetActive (false);
 			break;
@@ -60,6 +68,11 @@ public class KoroKoroManager : MonoBehaviour {
 			//coin.transform.parent = null;
 			clearObject.SetActive (false);
 			faultObject.SetActive (false);
+			timer -= Time.deltaTime;
+			if (timer < 0) {
+				SetState (3);
+				timer = 0;
+			}
 			break;
 		case State.Clear:
 			clearObject.SetActive (true);
@@ -69,6 +82,7 @@ public class KoroKoroManager : MonoBehaviour {
 		case State.Fault:
 			clearObject.SetActive (false);
 			faultObject.SetActive (true);
+
 			
 			break;
 		default:
@@ -82,8 +96,12 @@ public class KoroKoroManager : MonoBehaviour {
 			SelectStage (2);
 		}
 		if (Input.GetKeyDown (KeyCode.Alpha3)) {
-			//SelectStage (3);
+			SelectStage (3);
 		}
+		if (Input.GetKeyDown (KeyCode.Alpha4)) {
+			SelectStage (4);
+		}
+
 
 	
 	}
@@ -108,6 +126,10 @@ public class KoroKoroManager : MonoBehaviour {
 		default:
 			break;
 		}
+	}
+
+	public int GetState(){
+		return (int)state;
 	}
 
 	public void SelectStage(int num){

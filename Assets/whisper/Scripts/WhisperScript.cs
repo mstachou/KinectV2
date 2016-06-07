@@ -15,6 +15,6 @@ public class WhisperScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-	
+		anim.SetInteger ("number",num);
 	}
 }
